@@ -132,7 +132,7 @@ public class LanguageModel {
             List probs = CharDataMap.get(window);
             // If the window is not in the map, stop the process and return the generated text
             if (probs == null) {
-                break;
+                return generatedText.toString();
             }
             // Get a random character from the probabilities list and append it to the generated text
             char nextChar = getRandomChar(probs);
@@ -155,6 +155,20 @@ public class LanguageModel {
 	}
 
     public static void main(String[] args) {
-		// Your code goes here
+		int windowLength = Integer.parseInt(args[0]);
+        String initialText = args[1];
+        int generatedTextLength = Integer.parseInt(args[2]);
+        Boolean randomGeneration = args[3].equals("random");
+        String fileName = args[4];
+        // Create the LanguageModel object
+        LanguageModel lm;
+        if (randomGeneration)
+        lm = new LanguageModel(windowLength);
+        else
+        lm = new LanguageModel(windowLength, 20);
+        // Trains the model, creating the map.
+        lm.train(fileName);
+        // Generates text, and prints it.
+        System.out.println(lm.generate(initialText, generatedTextLength));
     }
 }
