@@ -118,39 +118,31 @@ public class LanguageModel {
 	 * @return the generated text
 	 */
 	public String generate(String initialText, int textLength) {
-        // If the length of initial text is less than windowLength, return initialText
-        if (initialText.length() < windowLength) {
+		String generatedText = initialText;
+        List probs = new List();
+        String currWindow = initialText;
+        char chr = ' ';
+
+        if (initialText.length() < windowLength)
             return initialText;
+
+        while (generatedText.length() < textLength + initialText.length()) {
+
+            probs = CharDataMap.get(currWindow);
+
+            if (probs == null)
+                return generatedText;
+
+            chr = getRandomChar(probs);
+
+		    generatedText = generatedText + chr;
+
+            // Advances the window: 
+            currWindow = currWindow.substring(1,windowLength) + chr;
+
         }
-        // Use a StringBuilder to store the generated text
-        StringBuilder generatedText = new StringBuilder(initialText);
-        // Set the initial window to the last windowLength characters of initialText
-        String window = initialText.substring(initialText.length() - windowLength);
-        // Loop until the generated text reaches the desired length
-        while (generatedText.length() < textLength) {
-            // Get the list of probabilities for the current window
-            List probs = CharDataMap.get(window);
-            // If the window is not in the map, stop the process and return the generated text
-            if (probs == null) {
-                return generatedText.toString();
-            }
-            // Get a random character from the probabilities list and append it to the generated text
-            char nextChar = getRandomChar(probs);
-            generatedText.append(nextChar);
-            // Update the window by removing the first character and adding the next character
-            window = window.substring(1) + nextChar;
-        }
-        // Return the generated text, truncating it to textLength characters if necessary
-        return generatedText.substring(0, textLength);
-    }
-    /** Returns a string representing the map of this language model. */
-	public String toString() {
-		StringBuilder str = new StringBuilder();
-		for (String key : CharDataMap.keySet()) {
-			List keyProbs = CharDataMap.get(key);
-			str.append(key + " : " + keyProbs + "\n");
-		}
-		return str.toString();
+        return generatedText;
+
 	}
 
     public static void main(String[] args) {
