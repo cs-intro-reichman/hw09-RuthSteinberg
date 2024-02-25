@@ -124,10 +124,8 @@ public class LanguageModel {
         }
         // Use a StringBuilder to store the generated text
         StringBuilder generatedText = new StringBuilder(initialText);
-        // Initialize the window with the last windowLength characters from initialText
+        // Set the initial window to the last windowLength characters of initialText
         String window = initialText.substring(initialText.length() - windowLength);
-        // Decrement textLength by the length of the initial text
-        textLength -= initialText.length();
         // Loop until the generated text reaches the desired length
         while (generatedText.length() < textLength) {
             // Get the list of probabilities for the current window
@@ -142,8 +140,8 @@ public class LanguageModel {
             // Update the window by removing the first character and adding the next character
             window = window.substring(1) + nextChar;
         }
-        // Return the generated text
-        return generatedText.toString();
+        // Return the generated text, truncating it to textLength characters if necessary
+        return generatedText.substring(0, textLength);
     }
     /** Returns a string representing the map of this language model. */
 	public String toString() {
