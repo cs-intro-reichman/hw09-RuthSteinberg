@@ -126,8 +126,9 @@ public class LanguageModel {
         StringBuilder generatedText = new StringBuilder(initialText);
         // Set the initial window to the last windowLength characters of initialText
         String window = initialText.substring(initialText.length() - windowLength);
+        // Decrement textLength by the length of the initial text
+        textLength -= initialText.length();
         // Loop until the generated text reaches the desired length
-        textLength -= initialText.length(); // Subtract initialText length to consider it in total
         while (generatedText.length() < textLength) {
             // Get the list of probabilities for the current window
             List probs = CharDataMap.get(window);
