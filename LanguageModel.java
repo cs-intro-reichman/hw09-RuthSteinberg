@@ -139,11 +139,10 @@ public class LanguageModel {
 
             // Advances the window: 
             currWindow = currWindow.substring(1,windowLength) + chr;
-
         }
         return generatedText;
-
 	}
+	
 
     public static void main(String[] args) {
 		int windowLength = Integer.parseInt(args[0]);
