@@ -36,40 +36,35 @@ public class LanguageModel {
     /** Builds a language model from the text in the given file (the corpus). */
 
     // Trains the language model using text from a file
-    public void train(String fileName) {
-            String window = "";
-            char c;
-            In in = new In(fileName);
-            // Reads just enough characters to form the first window
-            for (int i = 0; i < windowLength; i++) {
-                c = (char) in.readChar();
-                window += c;
-            }
-            // Processes the entire text, one character at a time
-            while (!in.isEmpty()) {
-            // Gets the next character
-            c = in.readChar();
-            // Checks if the window is already in the map
-            List probs = CharDataMap.get(window);
-            // If the window was not found in the map
-            if (probs == null) {
-                // Creates a new empty list, and adds (window, list) to the map
-                probs = new List();
-                CharDataMap.put(window, probs);
-            }
-            // Calculates the counts of the current character.
-            probs.update(c);
-            // Advances the window: adds c to the window’s end, and deletes the
-            // window's first character.
-            window = window.substring(1) + c;
-            }
-            // The entire file has been processed, and all the characters have been counted.
-            // Proceeds to compute and set the p and cp fields of all the CharData objects
-            // in each linked list in the map.
-            for (List probs : CharDataMap.values()){
-            calculateProbabilities(probs);
-            }
-            }
+     /** Builds a language model from the text in the given file (the corpus). */
+	public void train(String fileName)
+    {
+       In in = new In(fileName);
+       String window = "";
+       char c;
+       for (int i=0;i<windowLength;i++)
+       {
+           window= window+in.readChar();
+       }
+       while (!in.isEmpty())
+       {
+           c = in.readChar();
+           List probs = CharDataMap.get(window);
+           if (probs == null)
+           {
+               probs = new List();
+               CharDataMap.put(window, probs);
+           }
+           probs.update(c);
+           window=window.substring(1) + c; 
+       }
+       for (List probs : CharDataMap.values()) 
+       {
+           calculateProbabilities(probs);
+       }
+       
+   }
+
         
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
