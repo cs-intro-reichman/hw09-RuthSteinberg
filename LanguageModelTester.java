@@ -4,7 +4,7 @@ import java.io.FileWriter;
 
 public class LanguageModelTester {
         public static void main(String[] args) {
-        String methodName = args[0];
+        String methodName =  args[0];
         boolean result = false;
         switch (methodName) {
             case "calculateProbabilities":
@@ -28,7 +28,8 @@ public class LanguageModelTester {
             default:
                 break;
         }
-        System.out.println("Test " + methodName + " result: " + (result ? "PASSED" : "FAILED"));
+         System.out.println("Test " + methodName + " result: " + (result ? "PASSED" : "FAILED"));
+        
     }
 
     // Test method for the calculateProbabilities() method
@@ -142,7 +143,6 @@ public class LanguageModelTester {
                 }
                 result = result && res;
             }
-            
         }    
         return result;  
     }

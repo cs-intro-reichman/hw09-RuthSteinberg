@@ -1,54 +1,65 @@
-## DONT DELETE THIS FILE and DONT CHANGE THIS FILE
-
-# Compiled class files
+# Binary files
+*.com
 *.class
+*.dll
+*.exe
+*.o
+*.so
 
-# Log files
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Development
-.idea/
-.gradle/
-build/
-
-# External dependencies
-/bin/
-/target/
-/.classpath
-/.project
-/.settings/
-/*.iml
-
-# Eclipse-specific
-*.pydevproject
-.project
-.metadata
-bin/
-tmp/
-*.tmp
+# Backup files
+*~
 *.bak
-*.swp
-*~.nib
-local.properties
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs and editors
+## Visual Studio Code
+.vscode/
+
+## JetBrains
+.idea/
+
+## Sublime Text
+*.sublime-workspace
+
+## Eclipse
+.classpath
+.project
 .settings/
-.loadpath
-.springBeans
 
-# NetBeans-specific
-/nbproject/private/
-/build/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+## Xcode
+*.xcuserstate
+project.xcworkspace
+xcuserdata/
 
-# IntelliJ-specific
-/out/
-/*.ipr
-/*.iws
-/.idea/
-/*.iml
-/*.log
+# Node modules and logs
+node_modules/
+npm-debug.log*
+
+# Build and dist directories
+build/
+dist/
+
+# Environment configurations
+.env
+.env.test
+
+# Other
+*.swp
+*.swo
+*.tmp
+*.temp
+*.cache
+*.lock
