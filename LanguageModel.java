@@ -112,31 +112,27 @@ public class LanguageModel {
 	 * @param numberOfLetters - the size of text to generate
 	 * @return the generated text
 	 */
-	public String generate(String initialText, int textLength) {
-		String generatedText = initialText;
-        List probs = new List();
-        String currWindow = initialText;
-        char chr = ' ';
-
-        if (initialText.length() < windowLength)
+	public String generate(String initialText, int textLength) 
+    {
+		if (initialText.length()<windowLength)
+        {
             return initialText;
-
-        while (generatedText.length() < textLength + initialText.length()) {
-
-            probs = CharDataMap.get(currWindow);
-
-            if (probs == null)
-                return generatedText;
-
-            chr = getRandomChar(probs);
-
-		    generatedText = generatedText + chr;
-
-            // Advances the window: 
-            currWindow = currWindow.substring(1,windowLength) + chr;
         }
-        return generatedText;
+        String window=initialText.substring(initialText.length() - windowLength);
+        String generated=window;
+        while (generated.length()<textLength + windowLength)
+        {
+            List probs = CharDataMap.get(window);
+            if (probs == null){
+               return window;
+            }
+            char c = getRandomChar(probs);
+            generated=generated+c;
+            window = generated.substring(generated.length() - windowLength);
+        }
+        return generated;
 	}
+
 	
 
     public static void main(String[] args) {
