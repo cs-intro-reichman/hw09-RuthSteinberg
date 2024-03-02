@@ -1,5 +1,7 @@
 import java.util.HashMap;
 import java.util.Random;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class LanguageModel {
 
@@ -32,67 +34,76 @@ public class LanguageModel {
     }
 
     /** Builds a language model from the text in the given file (the corpus). */
-	public void train(String fileName)
-     {
-		In in = new In(fileName);
-        String window = "";
-        char c;
-        for (int i=0;i<windowLength;i++)
-        {
-            window= window+in.readChar();
-        }
-        while (!in.isEmpty())
-        {
-            c = in.readChar();
-            List probs = CharDataMap.get(window);
-            if (probs == null)
-            {
-                probs = new List();
-                CharDataMap.put(window, probs);
-            }
-            probs.update(c);
-            window=window.substring(1) + c; 
-        }
-        for (List probs : CharDataMap.values()) 
-        {
-            calculateProbabilities(probs);
-        }
-        
-	}
 
+    // Trains the language model using text from a file
+     /** Builds a language model from the text in the given file (the corpus). */
+	public void train(String fileName)
+    {
+       In in = new In(fileName);
+       String window = "";
+       char c;
+       for (int i=0;i<windowLength;i++)
+       {
+           window= window+in.readChar();
+       }
+       while (!in.isEmpty())
+       {
+           c = in.readChar();
+           List probs = CharDataMap.get(window);
+           if (probs == null)
+           {
+               probs = new List();
+               CharDataMap.put(window, probs);
+           }
+           probs.update(c);
+           window=window.substring(1) + c; 
+       }
+       for (List probs : CharDataMap.values()) 
+       {
+           calculateProbabilities(probs);
+       }
+       
+   }
+
+        
     // Computes and sets the probabilities (p and cp fields) of all the
 	// characters in the given list. */
-	public void calculateProbabilities(List probs) 
-    {
-        Node current = probs.getFirstNode();
-        int c = probs.countLetters();
-        double currentCP = 0;
-        while (current != null)// creates the P
-        {
-            current.cp.p = (double)current.cp.count/c;
-            currentCP += (double)current.cp.count/c;
-            current.cp.cp = currentCP;
-            current = current.next;
-            
+	public void calculateProbabilities(List probs) {	
+        // Step 1: Compute total number of characters
+         // Step 1: Compute total number of characters
+         int totalChars = 0;
+         for (int i = 0; i < probs.getSize(); i++) {
+             CharData cd = (CharData) probs.get(i);
+             totalChars += cd.count;
+         }
+        // Step 2: Compute and set the probabilities and cumulative probabilities
+        double cumulativeProbability = 0.0;
+        for (int i = 0; i < probs.getSize(); i++) {
+            CharData cd = (CharData) probs.get(i);
+            double probability = (double) cd.count / totalChars;
+            cumulativeProbability += probability;
+
+            cd.p=probability;
+            cd.cp=cumulativeProbability;
         }
-	}
+    }
 
     // Returns a random character from the given probabilities list.
-	public char getRandomChar(List probs) 
-    {
-        double r = randomGenerator.nextDouble();
-        Node current = probs.getFirstNode();
-        calculateProbabilities(probs);
-        int index = 0;
-        char c = 'i';
-        while (current.cp.cp<r)
-        {
-            index++;
-            current = current.next;
+	public char getRandomChar(List probs) {
+		 // Generate a random number between 0 and 1 (exclusive).
+         double r = randomGenerator.nextDouble();
+         // Iterate through the list and find the character corresponding to the random number.
+         for (int i = 0; i < probs.getSize(); i++) {
+            CharData cd = probs.get(i);
+            if (r < cd.cp) {
+                return cd.chr;
+            }
         }
-        c = current.cp.chr;
-        return c;
-	}
+
+         // If no character is found (this should not happen), return null.
+         return '\0'; // return null character.
+     }
+ 
 
     /**
 	 * Generates a random text, based on the probabilities that were learned during training. 
@@ -101,40 +112,35 @@ public class LanguageModel {
 	 * @param numberOfLetters - the size of text to generate
 	 * @return the generated text
 	 */
-	public String generate(String initialText, int textLength) 
-    {
-		if (initialText.length()<windowLength)
-        {
+	public String generate(String initialText, int textLength) {
+		//String generatedText = initialText;
+        //List probs = new List();
+        String currWindow = initialText;
+        char chr = ' ';
+
+        if (initialText.length() < windowLength)
             return initialText;
-        }
-        String window=initialText.substring(initialText.length() - windowLength);
-        String generated=window;
-        while (generated.length()<textLength + windowLength)
-        {
-            List probs = CharDataMap.get(window);
-            if (probs == null){
-               return window;
-            }
-            char c = getRandomChar(probs);
-            generated=generated+c;
-            window = generated.substring(generated.length() - windowLength);
-        }
-        return generated;
-	}
 
-    /** Returns a string representing the map of this language model. */
-	public String toString() {
-		StringBuilder str = new StringBuilder();
-		for (String key : CharDataMap.keySet()) {
-			List keyProbs = CharDataMap.get(key);
-			str.append(key + " : " + keyProbs + "\n");
-		}
-		return str.toString();
-	}
+        while (generatedText.length() < textLength + initialText.length()) {
 
-    public static void main(String[] args) 
-    {
-        int windowLength = Integer.parseInt(args[0]);
+            probs = CharDataMap.get(currWindow);
+
+            if (probs == null)
+                return generatedText;
+
+            chr = getRandomChar(probs);
+
+		    generatedText = generatedText + chr;
+
+            // Advances the window: 
+            currWindow = currWindow.substring(1,windowLength) + chr;
+        }
+        return generatedText;
+	}
+	
+
+    public static void main(String[] args) {
+		int windowLength = Integer.parseInt(args[0]);
         String initialText = args[1];
         int generatedTextLength = Integer.parseInt(args[2]);
         Boolean randomGeneration = args[3].equals("random");
