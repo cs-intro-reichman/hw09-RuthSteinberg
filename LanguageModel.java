@@ -113,8 +113,8 @@ public class LanguageModel {
 	 * @return the generated text
 	 */
 	public String generate(String initialText, int textLength) {
-		//String generatedText = initialText;
-        //List probs = new List();
+		String generatedText = initialText;
+        List probs = new List();
         String currWindow = initialText;
         char chr = ' ';
 
